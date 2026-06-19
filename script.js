@@ -6,8 +6,11 @@ const monthShortFormatter = new Intl.DateTimeFormat(undefined, { month: "short",
 const monthLongFormatter = new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric" });
 
 const today = startOfDay(new Date());
-const supabaseUrl = normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL);
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = normalizeSupabaseUrl(
+  import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL
+);
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
 const pageView = getPageView();
 
@@ -94,7 +97,9 @@ window.addEventListener("unhandledrejection", (event) => showFatalError(event.re
 async function initializeAuth() {
   try {
     if (!supabaseUrl || !supabaseAnonKey) {
-      showFatalError("Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local, then reload.");
+      showFatalError(
+        "Add Supabase URL and publishable key in .env.local, then reload."
+      );
       return;
     }
     supabase = createClient(supabaseUrl, supabaseAnonKey);
